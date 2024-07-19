@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { News } from './news.entity';
 import { NewsService } from './news.service';
 
@@ -26,8 +26,16 @@ export class NewsController {
         return this.newsService.update(+id, news);
     }
 
-    @Delete(':id')
     delete(@Param('id') id: string): boolean {
         return this.newsService.delete(+id);
+    }
+
+    @Delete()
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async deleteAll(): Promise<void> {
+        const result = await this.newsService.deleteAll();
+        if (!result) {
+            throw new HttpException('Error al eliminar todas las noticias', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

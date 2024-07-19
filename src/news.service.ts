@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { News } from './news.entity';
 
 @Injectable()
 export class NewsService {
+    constructor(
+        @InjectRepository(News)
+        private readonly newsRepository: Repository<News>,
+    ) { }
     private news: News[] = [];
     private idCounter = 1;
 
@@ -29,12 +35,15 @@ export class NewsService {
         return null;
     }
 
-    delete(id: number): boolean {
-        const index = this.news.findIndex(news => news.id === id);
-        if (index !== -1) {
-            this.news.splice(index, 1);
+    async deleteAll(): Promise<boolean> {
+        try {
+            await this.newsRepository.clear();
             return true;
+        } catch (error) {
+            console.error('Error al eliminar todas las noticias', error);
+            return false;
         }
-        return false;
     }
+
+
 }

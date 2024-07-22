@@ -26,8 +26,9 @@ export class NewsController {
         return this.newsService.update(+id, news);
     }
 
-    delete(@Param('id') id: string): boolean {
-        return this.newsService.delete(+id);
+    async delete(@Param('id') id: string): Promise<boolean> {
+        const result = await this.newsService.delete(+id);
+        return result;
     }
 
     @Delete()

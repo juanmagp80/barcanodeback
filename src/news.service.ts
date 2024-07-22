@@ -44,6 +44,15 @@ export class NewsService {
             return false;
         }
     }
+    async delete(id: number): Promise<boolean> {
+        try {
+            await this.newsRepository.delete(id);
+            return true;
+        } catch (error) {
+            console.error('Error al eliminar la noticia', error);
+            return false;
+        }
+    }
 
 
 }
